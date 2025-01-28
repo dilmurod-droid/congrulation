@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Qora fon */
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9); /* Shaffof oq fon */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+        .image-slider {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .image-slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            border-radius: 10px;
+        }
+        .image-slider img.active {
+            opacity: 1;
+        }
+        .congratulation {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .congratulation:last-child {
+            border-bottom: none;
+        }
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .message {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Salyutlar uchun stil */
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff0;
+            border-radius: 50%;
+            animation: explode 1.5s infinite;
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Salyutlar effekti -->
+    <div class="fireworks" id="fireworks"></div>
+
+    <div class="container">
+        <!-- Rasm slider -->
+        <div class="image-slider">
+            {% for rasm in rasmlar %}
+                <img src="{{ rasm.rasm.url }}" alt="{{ rasm.nom }}" class="{% if forloop.first %}active{% endif %}">
+            {% endfor %}
+        </div>
+
+        <h1>Congratulations</h1>
+
+        <!-- Congratulation ma'lumotlari -->
+        {% for congratulation in congratulations %}
+            <div class="congratulation">
+                <div class="name">{{ congratulation.name }}</div>
+                <div class="message">{{ congratulation.message }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Rasm slider uchun JavaScript
+        let images = document.querySelectorAll('.image-slider img');
+        let currentImage = 0;
+
+        function changeImage() {
+            // Hozirgi rasmini yashirish
+            images[currentImage].classList.remove('active');
+
+            // Keyingi rasmga o'tish
+            currentImage = (currentImage + 1) % images.length;
+
+            // Yangi rasmini ko'rsatish
+            images[currentImage].classList.add('active');
+        }
+
+        // Har 5 soniyada rasmni almashtirish
+        setInterval(changeImage, 3000);
+
+        // Salyutlar effekti uchun JavaScript
+        const fireworksContainer = document.getElementById('fireworks');
+
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            firework.style.left = `${Math.random() * 100}%`;
+            firework.style.top = `${Math.random() * 100}%`;
+            firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            fireworksContainer.appendChild(firework);
+
+            // Animatsiya tugagach, fireworkni olib tashlash
+            setTimeout(() => {
+                firework.remove();
+            }, 1500);
+        }
+
+        // Har 300ms da yangi salyut yaratish
+        setInterval(createFirework, 300);
+    </script>
+</body>
+</html>
